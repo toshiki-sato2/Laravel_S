@@ -25,16 +25,15 @@
                                 <form method="POST" action="{{ route('microposts.destroy', $micropost->id) }}" class = "inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" 
-                                        onclick="return confirm('Delete id = {{ $micropost->id }} ?')">Delete</button>
+                                    <button type="submit" class="btn btn-light btn-sm normal-case" 
+                                        onclick="return confirm('Delete id = {{ $micropost->id }} ?')">🗑</button>
                                 </form>
                                 
                                 @if (!Auth::user()->is_favoriting($micropost->id))
                                 {{-- お気に入り追加ボタンのフォーム --}}
                                 <form method="POST" action="{{ route('favorites.favorite',$micropost->id) }}" class = "inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" 
-                                        onclick="return confirm('add favorite? = {{ $micropost->id }} ?')">Add to Favorite</button>
+                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓</button>
                                 </form>
                                 
                                 @else
@@ -42,8 +41,7 @@
                                 <form method="POST" action="{{ route('favorites.unfavorite',$micropost->id) }}" class = "inline">
                                     @csrf
                                     @method("DELETE")
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" 
-                                        onclick="return confirm('delete favorite? = {{ $micropost->id }} ?')"> Unfavorite</button>
+                                    <button type="submit" class="btn btn-error btn-sm normal-case" >💓</button>
                                 </form>
                                 @endif
                             
@@ -52,8 +50,7 @@
                                 {{-- お気に入り追加ボタンのフォーム --}}
                                 <form method="POST" action="{{ route('favorites.favorite',$micropost->id) }}" class = "inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" 
-                                        onclick="return confirm('add favorite? = {{ $micropost->id }} ?')">Add to Favorite</button>
+                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓</button>
                                 </form>
                                 
                                 @else
@@ -61,8 +58,7 @@
                                 <form method="POST" action="{{ route('favorites.unfavorite',$micropost->id) }}" class = "inline">
                                     @csrf
                                     @method("DELETE")
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" 
-                                        onclick="return confirm('delete favorite? = {{ $micropost->id }} ?')"> Unfavorite</button>
+                                    <button type="submit" class="btn btn-error btn-sm normal-case">💓</button>
                                 </form>
                                 @endif
                             @endif

@@ -19,12 +19,14 @@ use App\Http\Controllers\FavoritesController;
 |
 */
 
+//この子達がダッシュボードで表示すべき内容をクラスからとってきてる
 Route::get('/', [MicropostsController::class, 'index']);
 
 Route::get('/dashboard', [MicropostsController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     
+    //Userごとの何かを見ている時に遷移している場所がここだぞ、
     Route::prefix("users/{id}")->group(function(){
         Route::post('follow', [UserFollowController::class, 'store'])->name('user.follow');
         Route::delete('unfollow', [UserFollowController::class, 'destroy'])->name('user.unfollow');
@@ -39,6 +41,7 @@ Route::middleware('auth')->group(function () {
     
     });
     
+    //お前が右上で飛ばしているのはわかっているんだけども、、
     Route::resource('users', UsersController::class, ['only' => ['index', 'show']]);
     //Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     //Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

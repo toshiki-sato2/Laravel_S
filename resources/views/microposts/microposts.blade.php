@@ -33,7 +33,7 @@
                                 {{-- お気に入り追加ボタンのフォーム --}}
                                 <form method="POST" action="{{ route('favorites.favorite',$micropost->id) }}" class = "inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓</button>
+                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓{{ $micropost->favorite_count }}</button>
                                 </form>
                                 
                                 @else
@@ -41,7 +41,7 @@
                                 <form method="POST" action="{{ route('favorites.unfavorite',$micropost->id) }}" class = "inline">
                                     @csrf
                                     @method("DELETE")
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" >💓</button>
+                                    <button type="submit" class="btn btn-error btn-sm normal-case" >💓{{ $micropost->favorite_count }}</button>
                                 </form>
                                 @endif
                             
@@ -50,7 +50,7 @@
                                 {{-- お気に入り追加ボタンのフォーム --}}
                                 <form method="POST" action="{{ route('favorites.favorite',$micropost->id) }}" class = "inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓</button>
+                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓{{ $micropost->favorite_count }}</button>
                                 </form>
                                 
                                 @else
@@ -58,7 +58,7 @@
                                 <form method="POST" action="{{ route('favorites.unfavorite',$micropost->id) }}" class = "inline">
                                     @csrf
                                     @method("DELETE")
-                                    <button type="submit" class="btn btn-error btn-sm normal-case">💓</button>
+                                    <button type="submit" class="btn btn-error btn-sm normal-case">💓{{ $micropost->favorite_count }}</button>
                                 </form>
                                 @endif
                             @endif

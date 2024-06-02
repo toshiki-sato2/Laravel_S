@@ -10,6 +10,7 @@ use App\Models\Users;
 class MicropostsController extends Controller
 {
 
+    //ダッシュボードが開かれたらまずこいつらが読み込まれるぞ
     public function index()
     {
         $data = [];
@@ -18,6 +19,10 @@ class MicropostsController extends Controller
             $user = \Auth::user();
             // ユーザーとフォロー中ユーザーの投稿の一覧を作成日時の降順で取得
             $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(10);
+            
+            foreach($microposts as $micropost){
+                $micropost->favorite_count = $micropost->favoriteCounts();
+            }
 
             $data = [
                 'user' => $user,
@@ -72,11 +77,16 @@ class MicropostsController extends Controller
         
         // ユーザーの投稿一覧を作成日時の降順で取得
         $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+        
+        foreach($microposts as $micropost){
+            $micropost->favorite_count = $micropost->favoriteCounts();
+        }
+
 
         // ユーザー詳細ビューでそれを表示
         return view('users.show', [
             'user' => $user,
-            'microposts' => $microposts
+            'microposts' => $microposts,
         ]);
     }
 

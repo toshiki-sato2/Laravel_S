@@ -9,13 +9,24 @@ use App\Models\User;
 
 class UsersController extends Controller
 {
-    public function index()
+    public function index(request $request)
     {
-        $users = User::orderBy("id", "desc")->paginate(10);
+        //$users = User::orderBy("id", "desc")->paginate(10);
+        $users = User::orderBy("id", "desc");
+        
+        $keywords = $request->input("keyword");
+        
+        if(!empty($keywords)){
+            $users->where("name", "like", "%{$keywords}%");
+        }
+        
+        $users = $users->paginate(10);
         
         return view("users.index",[
             "users" => $users]);
     }
+    
+    
     
     public function show(string $id)
     {
@@ -26,7 +37,10 @@ class UsersController extends Controller
         
         // ユーザーの投稿一覧を作成日時の降順で取得
         $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
-    
+        
+        //ここで代入がうまくいっている意味がわからないのかもしれない
+        //そりゃそう、foreach使ったらそれぞれが表示されるに決まってるやんバカ！
+        
         foreach($microposts as $micropost){
             $micropost->favorite_count = $micropost->favoriteCounts();
         }    
@@ -98,6 +112,7 @@ class UsersController extends Controller
             'users' => $followers,
         ]);
     }
+    
 
 
     

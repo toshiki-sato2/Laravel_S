@@ -1,5 +1,13 @@
 @if (isset($users))
     <ul class="list-none">
+        <div class = "mb-4">
+            <form action="{{ route('users.index') }}" method="GET">
+                @csrf
+                <input type="text" name="keyword" placeholder = "ユーザ名を検索" class = "" id = "input_style">
+                <input type="submit" value="検索" class = "bg-gradient-to-b from-blue-300 to-blue-800 hover:bg-gradient-to-l text-white rounded px-4 py-2">
+            </form>
+        </div>
+
         @foreach ($users as $user)
             <li class="flex items-center gap-x-2 mb-4">
                 {{-- ユーザーのメールアドレスをもとにGravatarを取得して表示 --}}

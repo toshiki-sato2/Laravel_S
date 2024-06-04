@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+
 class UsersController extends Controller
 {
     public function index(request $request)
@@ -121,10 +124,24 @@ class UsersController extends Controller
     
     public function update(request $request){
         
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
+            'new_password' => ['required', 'confirmed','max:128','min:8'],
+        ]);
+
+        if (!Hash::check($request->current_password, $request->user()->password)) {
+            // 現在のパスワードが一致しない場合の処理
+            return back()->withErrors(['current_password' => '現在のパスワードが間違っています。']);
+        }
+
+        $request->user()->forceFill([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->new_password),
+        ])->save();
         
-        
-        
-        return redirect("/");
+        return back()->with("status", "Profile Updated!");
     }
 
     

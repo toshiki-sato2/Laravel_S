@@ -127,19 +127,27 @@ class UsersController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
-            'new_password' => ['required', 'confirmed','max:128','min:8'],
+            'new_password' => ['nullable', 'confirmed','max:128','min:8'],
         ]);
+        
+        
 
         if (!Hash::check($request->current_password, $request->user()->password)) {
             // 現在のパスワードが一致しない場合の処理
             return back()->withErrors(['current_password' => '現在のパスワードが間違っています。']);
         }
+        
+        //パスワード以外の設定変更
+        $user = $request->user();
+        $user->name = $request->name;
+        $user->email = $request->email;
 
-        $request->user()->forceFill([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->new_password),
-        ])->save();
+        // 新しいパスワードが入力されている場合だけパスワードを更新
+        if ($request->new_password) {
+            $user->password = Hash::make($request->new_password);
+        }
+        
+        $user->save();
         
         return back()->with("status", "Profile Updated!");
     }

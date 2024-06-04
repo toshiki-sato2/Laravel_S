@@ -62,6 +62,11 @@ class UsersController extends Controller
         $user->loadRelationshipCounts();
         
         $microposts= $user->favorites()->paginate(10);
+
+        foreach($microposts as $micropost){
+            $micropost->favorite_count = $micropost->favoriteCounts();
+        }  
+        
         
         return view("users.favorites", [
             "user" => $user,

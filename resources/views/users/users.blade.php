@@ -29,7 +29,7 @@
         @endforeach
 
         @else
-            <h1>Ops! there is no post.</h1>
+            <h1>Ops! there is no user.</h1>
         @endif
     </ul>
     {{-- ページネーションのリンク --}}

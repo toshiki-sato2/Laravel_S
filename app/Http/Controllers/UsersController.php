@@ -132,6 +132,53 @@ class UsersController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
+        ]);
+        
+        
+        
+        //パスワード以外の設定変更
+        $user = $request->user();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        
+        $user->save();
+        
+        return back()->with("status", "Profile Updated!");
+    }
+
+    
+    public function edit_profile(request $request){
+        $request->validate([
+            'new_password' => ['confirmed','max:128','min:8'],
+        ]);
+        
+        if (!Hash::check($request->current_password, $request->user()->password)) {
+            // 現在のパスワードが一致しない場合の処理
+            return back()->withErrors(['current_password' => '現在のパスワードが間違っています。']);
+        }
+        $user = $request->user();
+        // 新しいパスワードが入力されている場合だけパスワードを更新
+        if ($request->new_password) {
+            $user->password = Hash::make($request->new_password);
+        }
+        
+        $user->save();
+        
+        return back()->with("status", "Profile Updated!");
+        
+    }
+
+    
+}
+
+
+
+/*
+    public function update(request $request){
+        
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
             'new_password' => ['nullable', 'confirmed','max:128','min:8'],
         ]);
         
@@ -156,8 +203,4 @@ class UsersController extends Controller
         
         return back()->with("status", "Profile Updated!");
     }
-
-    
-}
-
-
+*/    

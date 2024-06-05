@@ -171,8 +171,9 @@ class UsersController extends Controller
     
     public function update_image(request $request){
         //validate処理を何か考える
-        
-
+    $request->validate([
+        'image' => 'required|image|mimes:jpeg,png,jpg',
+    ]);
     if ($request->hasFile('avator_image')) {
         $image_path = $request->file("avator_image")->store("public/avator");
         $user = $request->user();

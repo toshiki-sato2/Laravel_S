@@ -11,7 +11,7 @@
                 <ul tabindex="0" class="menu hidden lg:menu-horizontal">
                     @include('commons.link_items')
                 </ul>
-                <div class="dropdown dropdown-end">
+                <div class="relative z-50 dropdown dropdown-end">
                     <button type="button" tabindex="0" class="btn btn-ghost normal-case font-normal lg:hidden">
                         @if (Auth::check())
                             {{ Auth::user()->name }}

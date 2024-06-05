@@ -43,8 +43,10 @@ Route::middleware('auth')->group(function () {
     
     //お前が右上で飛ばしているのはわかっているんだけども、、
     Route::resource('users', UsersController::class, ['only' => ['index', 'show', 'create', 'update']]);
-    Route::put('users/{id}/create', [UsersController::class, 'edit_profile'])->name('users.edit_profile');
     
+
+    Route::put('users/{id}/update_image', [UsersController::class, 'update_image'])->name('users.update_image');
+    Route::put('users/{id}/edit_profile', [UsersController::class, 'edit_profile'])->name('users.edit_profile');
     
     //Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     //Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

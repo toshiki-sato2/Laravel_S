@@ -9,23 +9,23 @@
 
 
     <div class="flex justify-center">
-        <form method="POST" action="{{ route('users.update', \Auth::User()->id) }}" class="w-1/2">
+        <form method="POST" action="{{ route('users.update_image', \Auth::User()->id) }}" class="w-1/2" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
                 <div class="form-control my-4 ">
                     <h2 class = "text-lg">プロフィール画像変更</h2>
                 </div>
-
                 <div class="form-control my-4">
-                    <label for="image" class="label">
+                    <label for="avator_image" class="label">
                         <span class="label-text">画像をファイルから選択</span>
                     </label>
-                    <input type="file" name="image"  value = {{ \Auth::User()->name }} required>
+                    <input type="file" name="avator_image" required>
                 </div>
             <button type="submit" class="btn btn-primary btn-outline">編集完了</button>
         </form>
     </div>    
+    
     
 
     <div class="flex justify-center">
@@ -57,14 +57,13 @@
 
 
     <div class="flex justify-center">
-        <form method="POST" action="{{ route('users.edit_profile', \Auth::User()->id) }}" class="w-1/2">
+        <form method="POST" action="{{route('users.edit_profile', \Auth::User()->id) }}" class="w-1/2">
             @csrf
             @method('PUT')
             
                 <div class="form-control my-4 font-bold">
                     <h2 class = "text-lg">パスワードの変更</h2>
                 </div>
-
             
                 <div class="form-control my-4">
                     <label for="current_password" class="label">

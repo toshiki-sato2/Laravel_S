@@ -13,7 +13,11 @@
                 {{-- ユーザーのメールアドレスをもとにGravatarを取得して表示 --}}
                 <div class="avatar">
                     <div class="w-12 rounded">
-                        <img src="{{ Gravatar::get($user->email) }}" alt="" />
+                        @if ($user->avatar_path === "default.png")
+                            <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="">
+                        @else
+                            <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="Avatar">
+                        @endif
                     </div>
                 </div>
                 <div>

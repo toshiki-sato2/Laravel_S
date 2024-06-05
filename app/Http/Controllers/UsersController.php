@@ -167,6 +167,24 @@ class UsersController extends Controller
         return back()->with("status", "Profile Updated!");
         
     }
+    
+    
+    public function update_image(request $request){
+        //validate処理を何か考える
+        
+
+    if ($request->hasFile('avator_image')) {
+        $image_path = $request->file("avator_image")->store("public/avator");
+        $user = $request->user();
+        //$user->avatar_path = $image_path;
+        $user->avatar_path = str_replace('public/', '', $image_path);
+        $user->save();
+        return back()->with("status", "profile image updated");
+    } else {
+        return back()->with("status", "profile image failed");
+    }
+        
+    }
 
     
 }

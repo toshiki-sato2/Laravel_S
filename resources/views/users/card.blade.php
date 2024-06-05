@@ -3,8 +3,11 @@
         <h2 class="card-title">{{ $user->name }}</h2>
     </div>
     <figure>
-        {{-- ユーザーのメールアドレスをもとにGravatarを取得して表示 --}}
-        <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="">
+        @if ($user->avatar_path === "default.png")
+            <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="！画像が設定されていません！">
+        @else
+            <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="！もし画像がうまく表示されなければ画像を再設定してください！">
+        @endif
     </figure>
 </div>
 {{-- フォロー／アンフォローボタン --}}

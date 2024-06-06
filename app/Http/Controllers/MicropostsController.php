@@ -11,14 +11,23 @@ class MicropostsController extends Controller
 {
 
     //ダッシュボードが開かれたらまずこいつらが読み込まれるぞ
-    public function index()
+    public function index(Request $request)
     {
         $data = [];
         if (\Auth::check()) { // 認証済みの場合
             // 認証済みユーザーを取得
             $user = \Auth::user();
             // ユーザーとフォロー中ユーザーの投稿の一覧を作成日時の降順で取得
-            $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(10);
+            $microposts = $user->feed_microposts()->orderBy('created_at', 'desc');
+            
+            $keywords = $request->input("keyword");
+        
+            if(!empty($keywords)){
+                $microposts->where("content", "like", "%{$keywords}%");
+            }
+        
+            $microposts = $microposts->paginate(10);
+            
             
             foreach($microposts as $micropost){
                 $micropost->favorite_count = $micropost->favoriteCounts();
@@ -94,3 +103,36 @@ class MicropostsController extends Controller
     
 
 }
+
+
+
+/*
+    //ダッシュボードが開かれたらまずこいつらが読み込まれるぞ
+    public function index()
+    {
+        $data = [];
+        if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザーを取得
+            $user = \Auth::user();
+            // ユーザーとフォロー中ユーザーの投稿の一覧を作成日時の降順で取得
+            $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(10);
+            
+            
+            
+            foreach($microposts as $micropost){
+                $micropost->favorite_count = $micropost->favoriteCounts();
+            }
+
+            $data = [
+                'user' => $user,
+                'microposts' => $microposts,
+            ];
+        }
+        
+        // dashboardビューでそれらを表示
+        return view('dashboard', $data);
+    }
+
+
+
+*/

@@ -1,6 +1,6 @@
 @if (isset($users))
     <ul class="list-none">
-        <div class = "mb-4">
+        <div class = "mb-4 {{ Request::routeIs('users.followers') ? 'hidden' : '' }} {{ Request::routeIs('users.followings') ? 'hidden' : '' }}">
             <form action="{{ route('users.index') }}" method="GET">
                 @csrf
                 <input type="text" name="keyword" placeholder = "ユーザ名を検索" class = "" id = "input_style">

@@ -154,4 +154,12 @@ class User extends Authenticatable
     
     
     
+    //unlikeの
+    //関係を表す
+    public function unlikes(){
+        return $this->belongsToMany(Micropost::class, "unlike", "user_id", "micropost_id")->withTimestamps();
+    }
+    
+    
+    
 }

@@ -32,36 +32,30 @@
                                     <button type="submit" class="btn btn-light btn-sm normal-case" 
                                         onclick="return confirm('Delete id = {{ $micropost->id }} ?')">🗑</button>
                                 </form>
-                                
                                 @if (!Auth::user()->is_favoriting($micropost->id))
                                 {{-- お気に入り追加ボタンのフォーム --}}
-                                <form method="POST" action="{{ route('favorites.favorite',$micropost->id) }}" class = "inline">
+                                <form id="favorite-form-{{ $micropost->id }}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓{{ $micropost->favorite_count }}</button>
-                                </form>
-                                
+                                    <button type="submit" class="btn btn-light btn-sm normal-case">💓{{ $micropost->favorite_count }}</button>
+                                </form>    
                                 @else
-                                {{-- お気に入り削除ボタンのフォーム --}}
-                                <form method="POST" action="{{ route('favorites.unfavorite',$micropost->id) }}" class = "inline">
+                                 {{-- お気に入り追加ボタンのフォーム --}}
+                                <form id="favorite-form-{{ $micropost->id }}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
                                     @csrf
-                                    @method("DELETE")
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" >💓{{ $micropost->favorite_count }}</button>
+                                    <button type="submit" class="btn btn-error btn-sm normal-case">💓{{ $micropost->favorite_count }}</button>
                                 </form>
                                 @endif
-                            
                             @else
                                 @if (!Auth::user()->is_favoriting($micropost->id))
                                 {{-- お気に入り追加ボタンのフォーム --}}
-                                <form method="POST" action="{{ route('favorites.favorite',$micropost->id) }}" class = "inline">
+                                <form id="favorite-form-{{ $micropost->id }}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-light btn-sm normal-case" >💓{{ $micropost->favorite_count }}</button>
-                                </form>
-                                
+                                    <button type="submit" class="btn btn-light btn-sm normal-case">💓{{ $micropost->favorite_count }}</button>
+                                </form>    
                                 @else
-                                {{-- お気に入り削除ボタンのフォーム --}}
-                                <form method="POST" action="{{ route('favorites.unfavorite',$micropost->id) }}" class = "inline">
+                                 {{-- お気に入り追加ボタンのフォーム --}}
+                                <form id="favorite-form-{{ $micropost->id }}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
                                     @csrf
-                                    @method("DELETE")
                                     <button type="submit" class="btn btn-error btn-sm normal-case">💓{{ $micropost->favorite_count }}</button>
                                 </form>
                                 @endif
@@ -75,3 +69,34 @@
         {{ $microposts->links() }}
     @endif
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    @foreach ($microposts as $micropost)
+    $('#favorite-form-{{ $micropost->id }}').on('submit', function(event) {
+        event.preventDefault();
+
+        var url = $(this).attr('action');
+        var data = $(this).serialize();
+        var button = $(this).find('button');
+
+        $.post(url, data).done(function(response) {
+            // ボタンのテキストを更新
+            button.text('💓' + response.favoriteCount);
+
+            // ボタンのクラスを更新
+            if (response.status == 'favorited') {
+                button.removeClass('btn-light');
+                button.addClass('btn-error');
+            } else {
+                button.removeClass('btn-error');
+                button.addClass('btn-light');
+            }
+        }).fail(function(error) {
+            console.log(error);
+        });
+    });
+    @endforeach
+});
+</script>

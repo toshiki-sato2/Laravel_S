@@ -22,7 +22,19 @@
                     </label>
                     <input type="file" name="avator_image" required>
                 </div>
-            <button type="submit" class="btn btn-primary btn-outline">編集完了</button>
+                <button type="submit" class="btn btn-primary btn-outline mb-4">編集完了</button>
+                <div class="card border border-base-300">
+                    <div class="card-body bg-base-200 text-4xl">
+                        <h2 class="card-title">現在のプロフィール画像</h2>
+                    </div>
+                    <figure>
+                        @if (Auth::user()->avatar_path === "default.png")
+                            <img src="{{ Gravatar::get(Auth::user()->email, ['size' => 500]) }}" alt="！画像が設定されていません！" class = "w-40 h-40">
+                        @else
+                            <img src="{{ asset('storage/' . Auth::user()->avatar_path) }}" alt="！もし画像がうまく表示されなければ画像を再設定してください！" class = "w-40 h-40">
+                        @endif
+                    </figure>
+                </div>
         </form>
     </div>    
     

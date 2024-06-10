@@ -1,5 +1,5 @@
 
-<div class="mb-4">
+<div class="mb-4 mt-4">
     <input type="text" name="keyword" placeholder="投稿検索" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" id="input_style">
 </div>
 
@@ -140,7 +140,7 @@ $(document).ready(function() {
         console.log("Keyword changed:", keyword); // この行を追加
 
         $.ajax({
-            url: '{{ route('microposts.search') }}', // URLが正しいか確認
+            url: '{{ route('microposts.search', ['id' => $user->id]) }}', // URLが正しいか確認
             type: 'GET',
             data: {keyword: keyword},
             dataType: 'json',
@@ -166,6 +166,7 @@ function updateMicroposts(microposts) {
                          Gravatar.get(micropost.user.email, {size: 500}) : 
                          baseUrl + '/' + micropost.user.avatar_path;
         var favoriteButtonClass = micropost.is_favoriting ? 'btn-error' : 'btn-light';
+        console.log(favoriteButtonClass);
         html += `
             <li class="flex items-start gap-x-2 mb-4">
                 <div class="avatar">
@@ -182,13 +183,13 @@ function updateMicroposts(microposts) {
                         <p id="content-${micropost.id}" class="mb-0">${micropost.content}</p>
                     </div>
                     <div>
+                        ${micropost.user.id === loggedInUserId ? `<button onclick="deletePost(${micropost.id})" class="btn btn-light btn-sm normal-case">🗑</button>` : ''}
                         <form id="favorite-form-${micropost.id}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
                             <input type="hidden" name="_token" value="${csrfToken}">
                             <button type="submit" class="btn ${favoriteButtonClass} btn-sm normal-case">
                                 💓${micropost.favorite_count}
                             </button>
                         </form>
-                        ${micropost.user.id === loggedInUserId ? `<button onclick="deletePost(${micropost.id})" class="btn btn-light btn-sm normal-case">🗑</button>` : ''}
                     </div>
                 </div>
             </li>

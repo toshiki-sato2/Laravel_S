@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Micropost;
-use App\Models\Users;
+use App\Models\User;
+
 
 class MicropostsController extends Controller
 {
@@ -43,31 +44,36 @@ class MicropostsController extends Controller
         return view('dashboard', $data);
     }
     
+    public function keyword_search(Request $request, $id){
+    $user = User::findOrFail($id);
     
-    public function keyword_search(Request $request){
-        if (\Auth::check()) {
-            $user = \Auth::user();
-            $query = $user->feed_microposts()->with("user")->orderBy('created_at', 'desc');
+    if(\Auth::user()->id !== intval($id)){
+        $query = $user->microposts()->with("user")->orderBy('created_at', 'desc');}
+    else{
+        $query = $user->feed_microposts()->with("user")->orderBy('created_at', 'desc');
+    }
+    //$query = $user->microposts->orderBy('created_at', 'desc');
 
-            $keywords = $request->input("keyword");
-            if(!empty($keywords)){
-                $query->where("content", "like", "%{$keywords}%");
-            }
+    $keywords = $request->input("keyword");
+    if (!empty($keywords)) {
+        $query->where("content", "like", "%{$keywords}%");
+    }
 
-            $microposts = $query->paginate(10);
+    $microposts = $query->paginate(10);
 
-            foreach($microposts as $micropost){
-                $micropost->favorite_count = $micropost->favoriteCounts();
-                $micropost->is_favoriting = \Auth::user()->is_favoriting($micropost->id);
-            }
+    foreach ($microposts as $micropost) {
+        $micropost->favorite_count = $micropost->favoriteCounts();
+        $micropost->is_favoriting = \Auth::user()->is_favoriting($micropost->id);
+    }
 
-            return response()->json([
-                'status' => 'success',
-                'microposts' => $microposts->items(),
-            ]);
-        }
+    if ($microposts->isEmpty()) {
+        return response()->json(['status' => 'failed', 'message' => 'No posts found', 'microposts' => $microposts->items()]);
+    }
 
-    return response()->json(['status' => 'failed']);
+    return response()->json([
+        'status' => 'success',
+        'microposts' => $microposts->items(),
+    ]);
 }
 
     public function store(Request $request)

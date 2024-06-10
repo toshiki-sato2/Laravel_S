@@ -148,7 +148,6 @@ class User extends Authenticatable
     public function is_favoriting(int $micropostId){
         return $this->favorites()->where("micropost_id", $micropostId)->exists();
         
-        
         //return $this->followings()->where("follow_id", $userId)->exists(); 
     }
     

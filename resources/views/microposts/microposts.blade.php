@@ -1,3 +1,7 @@
+<div class="mb-4">
+    <input type="text" name="keyword" placeholder="投稿を検索" class="bg-gradient-to-b from-blue-300 to-blue-800 hover:bg-gradient-to-l text-white rounded px-4 py-2" id="input_style">
+</div>
+
 <div class="mt-4">
     @if (!empty($microposts))
         <ul class="list-none">
@@ -21,7 +25,7 @@
                         </div>
                         <div>
                             {{-- 投稿内容 --}}
-                            <p class="mb-0">{!! nl2br(e($micropost->content)) !!}</p>
+                            <p id = "content-{{ $micropost->id }}" class="mb-0">{!! nl2br(e($micropost->content)) !!}</p>
                         </div>
                         <div>
                             @if (Auth::id() == $micropost->user_id)
@@ -99,4 +103,74 @@ $(document).ready(function() {
     });
     @endforeach
 });
+
+
+
+$(document).ready(function() {
+    $('input[name="keyword"]').on('input', function() {
+        var keyword = $(this).val();
+        console.log("Keyword changed:", keyword); // この行を追加
+
+        $.ajax({
+            url: '{{ route('microposts.search') }}', // URLが正しいか確認
+            type: 'GET',
+            data: {keyword: keyword},
+            dataType: 'json',
+            success: function(data) {
+                console.log("Data received:", data); // 受け取ったデータをログに出力
+                updateMicroposts(data.microposts);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", status, error); // エラー情報をログに出力
+            }
+        });
+    });
+});
+
+
+function updateMicroposts(microposts) {
+    var html = '';
+    var baseUrl = "{{ asset('storage/') }}"; 
+    microposts.forEach(function(micropost) {
+        var avatarPath = micropost.user.avatar_path === 'default.png' ? 
+                         Gravatar.get(micropost.user.email, {size: 500}) : 
+                         baseUrl + '/' +micropost.user.avatar_path;
+        console.log(avatarPath);
+        html += `
+            <li class="flex items-start gap-x-2 mb-4">
+                <div class="avatar">
+                    <div class="w-12 rounded">
+                        <img src="${avatarPath}" alt="Avatar">
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <a class="link link-hover text-info" href="/users/${micropost.user.id}">${micropost.user.name}</a>
+                        <span class="text-muted text-gray-500">posted at ${micropost.created_at}</span>
+                    </div>
+                    <div>
+                        <p id="content-${micropost.id}" class="mb-0">${micropost.content}</p>
+                    </div>
+                    <div>
+                        <button onclick="toggleFavorite(${micropost.id})" class="btn ${micropost.is_favorited ? 'btn-error' : 'btn-light'} btn-sm normal-case">
+                            💓${micropost.favorite_count}
+                        </button>
+                    </div>
+                </div>
+            </li>
+        `;
+    });
+    $('.list-none').html(html); // 既存のリストを新しいHTMLで置き換え
+}
+
+function toggleFavorite(micropostId) {
+    // お気に入りの追加/削除のためのAPIを呼び出す関数
+    // この関数の具体的な実装はサーバーサイドのAPIと連携する必要があります。
+}
+
+
+
+
+
+
 </script>

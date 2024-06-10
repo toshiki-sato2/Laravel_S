@@ -43,6 +43,28 @@ class MicropostsController extends Controller
         return view('dashboard', $data);
     }
     
+    
+    public function keyword_search(Request $request){
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $query = $user->feed_microposts()->with("user")->orderBy('created_at', 'desc');
+
+            $keywords = $request->input("keyword");
+            if(!empty($keywords)){
+                $query->where("content", "like", "%{$keywords}%");
+            }
+
+            $microposts = $query->paginate(10);
+
+            return response()->json([
+                'status' => 'success',
+                'microposts' => $microposts->items(),
+            ]);
+        }
+
+    return response()->json(['status' => 'failed']);
+}
+
     public function store(Request $request)
     {
         // バリデーション

@@ -26,8 +26,8 @@ Route::get('/dashboard', [MicropostsController::class, 'index'])->middleware(['a
 
 Route::middleware('auth')->group(function () {
     
-        Route::post('/dashboard', [MicropostsController::class, 'index'])->name('microposts.index');
-    
+    Route::post('/dashboard', [MicropostsController::class, 'index'])->name('microposts.index');
+    Route::get('/dashboard/search', [MicropostsController::class, 'keyword_search'])->name('microposts.search');
     //Userごとの何かを見ている時に遷移している場所がここだぞ、
     Route::prefix("users/{id}")->group(function(){
         Route::post('follow', [UserFollowController::class, 'store'])->name('user.follow');

@@ -77,40 +77,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-/*
-$(document).ready(function() {
-    // すべての 'favorite-form-' で始まるIDを持つフォームを選択し、それぞれに対して処理を行います。
-    $('form[id^="favorite-form-"]').each(function() {
-        console.log('Form found:', this); // ページに存在するフォームをログに出力
-    });
-
-    // フォームの送信イベントに対してイベントハンドラを設定
-    $('form[id^="favorite-form-"]').on('submit', function(event) {
-        console.log('Form submitted:', this); // 送信されたフォームをログに出力
-        event.preventDefault(); // デフォルトのフォーム送信を防止
-
-        var url = $(this).attr('action'); // フォームのaction属性からURLを取得
-        var data = $(this).serialize(); // フォームのデータをシリアライズ
-        var button = $(this).find('button'); // フォーム内のボタンを取得
-
-        console.log('URL:', url); // ログにURLを出力
-        console.log('Data:', data); // ログにシリアライズされたデータを出力
-
-        // AJAXリクエストを実行
-        $.post(url, data).done(function(response) {
-            console.log('Success:', response); // 成功時のレスポンスをログに出力
-            // 応答に基づいてUIを更新
-            button.text('💓' + response.favoriteCount);
-            if (response.status === 'favorited') {
-                button.removeClass('btn-light').addClass('btn-error');
-            } else {
-                button.removeClass('btn-error').addClass('btn-light');
-            }
-        }).fail(function(error) {
-            console.error('Error:', error); // エラー時にログにエラーを出力
-        });
-    });
-});*/
 
 
 $(document).on('submit', 'form[id^="favorite-form-"]', function(event) {

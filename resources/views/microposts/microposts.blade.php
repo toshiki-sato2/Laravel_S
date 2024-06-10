@@ -1,5 +1,6 @@
+
 <div class="mb-4">
-    <input type="text" name="keyword" placeholder="投稿を検索" class="bg-gradient-to-b from-blue-300 to-blue-800 hover:bg-gradient-to-l text-white rounded px-4 py-2" id="input_style">
+    <input type="text" name="keyword" placeholder="投稿検索" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" id="input_style">
 </div>
 
 <div class="mt-4">
@@ -76,32 +77,59 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+/*
 $(document).ready(function() {
-    @foreach ($microposts as $micropost)
-    $('#favorite-form-{{ $micropost->id }}').on('submit', function(event) {
-        event.preventDefault();
+    // すべての 'favorite-form-' で始まるIDを持つフォームを選択し、それぞれに対して処理を行います。
+    $('form[id^="favorite-form-"]').each(function() {
+        console.log('Form found:', this); // ページに存在するフォームをログに出力
+    });
 
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
-        var button = $(this).find('button');
+    // フォームの送信イベントに対してイベントハンドラを設定
+    $('form[id^="favorite-form-"]').on('submit', function(event) {
+        console.log('Form submitted:', this); // 送信されたフォームをログに出力
+        event.preventDefault(); // デフォルトのフォーム送信を防止
 
+        var url = $(this).attr('action'); // フォームのaction属性からURLを取得
+        var data = $(this).serialize(); // フォームのデータをシリアライズ
+        var button = $(this).find('button'); // フォーム内のボタンを取得
+
+        console.log('URL:', url); // ログにURLを出力
+        console.log('Data:', data); // ログにシリアライズされたデータを出力
+
+        // AJAXリクエストを実行
         $.post(url, data).done(function(response) {
-            // ボタンのテキストを更新
+            console.log('Success:', response); // 成功時のレスポンスをログに出力
+            // 応答に基づいてUIを更新
             button.text('💓' + response.favoriteCount);
-
-            // ボタンのクラスを更新
-            if (response.status == 'favorited') {
-                button.removeClass('btn-light');
-                button.addClass('btn-error');
+            if (response.status === 'favorited') {
+                button.removeClass('btn-light').addClass('btn-error');
             } else {
-                button.removeClass('btn-error');
-                button.addClass('btn-light');
+                button.removeClass('btn-error').addClass('btn-light');
             }
         }).fail(function(error) {
-            console.log(error);
+            console.error('Error:', error); // エラー時にログにエラーを出力
         });
     });
-    @endforeach
+});*/
+
+
+$(document).on('submit', 'form[id^="favorite-form-"]', function(event) {
+    event.preventDefault(); // デフォルトの送信を防止
+    var url = $(this).attr('action'); // フォームのアクションURLを取得
+    var data = $(this).serialize(); // フォームのデータをシリアライズ
+    var button = $(this).find('button'); // フォーム内のボタンを取得
+
+    $.post(url, data).done(function(response) {
+        // レスポンスに基づいてボタンのテキストとクラスを更新
+        button.text('💓' + response.favoriteCount);
+        if (response.status === 'favorited') {
+            button.removeClass('btn-light').addClass('btn-error');
+        } else {
+            button.removeClass('btn-error').addClass('btn-light');
+        }
+    }).fail(function(error) {
+        console.error('Error:', error); // エラーが発生した場合、コンソールにエラーを出力
+    });
 });
 
 
@@ -130,12 +158,14 @@ $(document).ready(function() {
 
 function updateMicroposts(microposts) {
     var html = '';
+    var csrfToken = '{{ csrf_token() }}';  // CSRFトークンを取得
+    var loggedInUserId = @json(auth()->id());
     var baseUrl = "{{ asset('storage/') }}"; 
     microposts.forEach(function(micropost) {
         var avatarPath = micropost.user.avatar_path === 'default.png' ? 
                          Gravatar.get(micropost.user.email, {size: 500}) : 
-                         baseUrl + '/' +micropost.user.avatar_path;
-        console.log(avatarPath);
+                         baseUrl + '/' + micropost.user.avatar_path;
+        var favoriteButtonClass = micropost.is_favoriting ? 'btn-error' : 'btn-light';
         html += `
             <li class="flex items-start gap-x-2 mb-4">
                 <div class="avatar">
@@ -152,9 +182,13 @@ function updateMicroposts(microposts) {
                         <p id="content-${micropost.id}" class="mb-0">${micropost.content}</p>
                     </div>
                     <div>
-                        <button onclick="toggleFavorite(${micropost.id})" class="btn ${micropost.is_favorited ? 'btn-error' : 'btn-light'} btn-sm normal-case">
-                            💓${micropost.favorite_count}
-                        </button>
+                        <form id="favorite-form-${micropost.id}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
+                            <input type="hidden" name="_token" value="${csrfToken}">
+                            <button type="submit" class="btn ${favoriteButtonClass} btn-sm normal-case">
+                                💓${micropost.favorite_count}
+                            </button>
+                        </form>
+                        ${micropost.user.id === loggedInUserId ? `<button onclick="deletePost(${micropost.id})" class="btn btn-light btn-sm normal-case">🗑</button>` : ''}
                     </div>
                 </div>
             </li>
@@ -162,15 +196,5 @@ function updateMicroposts(microposts) {
     });
     $('.list-none').html(html); // 既存のリストを新しいHTMLで置き換え
 }
-
-function toggleFavorite(micropostId) {
-    // お気に入りの追加/削除のためのAPIを呼び出す関数
-    // この関数の具体的な実装はサーバーサイドのAPIと連携する必要があります。
-}
-
-
-
-
-
 
 </script>

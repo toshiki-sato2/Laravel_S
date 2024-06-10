@@ -56,6 +56,11 @@ class MicropostsController extends Controller
 
             $microposts = $query->paginate(10);
 
+            foreach($microposts as $micropost){
+                $micropost->favorite_count = $micropost->favoriteCounts();
+                $micropost->is_favoriting = \Auth::user()->is_favoriting($micropost->id);
+            }
+
             return response()->json([
                 'status' => 'success',
                 'microposts' => $microposts->items(),

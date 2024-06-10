@@ -11,7 +11,8 @@
             @include('users.navtabs')
             <div class="mt-4">
                 {{-- ポスト一覧 --}}
-                @include('microposts.microposts')
+                {{-- @include('microposts.microposts') --}}
+                @include("microposts.favoriteposts")
             </div>
         </div>
     </div>

@@ -30,13 +30,17 @@
                         </div>
                         <div>
                             @if (Auth::id() == $micropost->user_id)
-                                {{-- 投稿削除ボタンのフォーム --}}
-                                <form method="POST" action="{{ route('microposts.destroy', $micropost->id) }}" class = "inline">
+                                {{-- 投稿削除ボタンのフォーム --
+                                
+                                <form class="delete-form inline" data-id="{{ $micropost->id }}" data-url="{{ route('microposts.destroy', $micropost->id) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-light btn-sm normal-case" 
-                                        onclick="return confirm('Delete id = {{ $micropost->id }} ?')">🗑</button>
-                                </form>
+                                    <button type="button" class="btn btn-light btn-sm normal-case delete-btn">🗑</button>
+                                </form>--}}
+                                
+                                <button type="button" class="btn btn-light btn-sm normal-case delete-btn" data-id="{{ $micropost->id }}" data-url="{{ route('microposts.destroy', $micropost->id) }}">🗑</button>
+                                
+                                
                                 @if (!Auth::user()->is_favoriting($micropost->id))
                                 {{-- お気に入り追加ボタンのフォーム --}}
                                 <form id="favorite-form-{{ $micropost->id }}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
@@ -77,9 +81,12 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    var favoritesBaseUrl = "{{ route('favorites.favorite', ['id' => ':id']) }}";
+</script>
+<script>
 
 
-$(document).on('submit', 'form[id^="favorite-form-"]', function(event) {
+$(document).off('submit', 'form[id^="favorite-form-"]').on('submit', 'form[id^="favorite-form-"]', function(event) {
     event.preventDefault(); // デフォルトの送信を防止
     var url = $(this).attr('action'); // フォームのアクションURLを取得
     var data = $(this).serialize(); // フォームのデータをシリアライズ
@@ -124,15 +131,16 @@ $(document).ready(function() {
 
 function updateMicroposts(microposts) {
     var html = '';
-    var csrfToken = '{{ csrf_token() }}';  // CSRFトークンを取得
+    var csrfToken = '{{ csrf_token() }}';
     var loggedInUserId = @json(auth()->id());
-    var baseUrl = "{{ asset('storage/') }}"; 
+    var baseUrl = "{{ asset('storage/') }}";
     microposts.forEach(function(micropost) {
-        var avatarPath = micropost.user.avatar_path === 'default.png' ? 
-                         Gravatar.get(micropost.user.email, {size: 500}) : 
+        var avatarPath = micropost.user.avatar_path === 'default.png' ?
+                         Gravatar.get(micropost.user.email, {size: 500}) :
                          baseUrl + '/' + micropost.user.avatar_path;
         var favoriteButtonClass = micropost.is_favoriting ? 'btn-error' : 'btn-light';
-        console.log(favoriteButtonClass);
+        var deleteUrl = `/microposts/${micropost.id}`;
+        var favoriteUrl = favoritesBaseUrl.replace(':id', micropost.id);
         html += `
             <li class="flex items-start gap-x-2 mb-4">
                 <div class="avatar">
@@ -149,8 +157,8 @@ function updateMicroposts(microposts) {
                         <p id="content-${micropost.id}" class="mb-0">${micropost.content}</p>
                     </div>
                     <div>
-                        ${micropost.user.id === loggedInUserId ? `<button onclick="deletePost(${micropost.id})" class="btn btn-light btn-sm normal-case">🗑</button>` : ''}
-                        <form id="favorite-form-${micropost.id}" method="POST" action="{{ route('favorites.favorite', $micropost->id) }}" class="inline">
+                        ${micropost.user.id === loggedInUserId ? `<button data-id="${micropost.id}" data-url="${deleteUrl}" class="delete-btn btn btn-light btn-sm normal-case">🗑</button>` : ''}
+                        <form id="favorite-form-${micropost.id}" method="POST" action="${favoriteUrl}" class="inline">
                             <input type="hidden" name="_token" value="${csrfToken}">
                             <button type="submit" class="btn ${favoriteButtonClass} btn-sm normal-case">
                                 💓${micropost.favorite_count}
@@ -161,7 +169,40 @@ function updateMicroposts(microposts) {
             </li>
         `;
     });
-    $('.list-none').html(html); // 既存のリストを新しいHTMLで置き換え
+    $('.list-none').html(html);
 }
+
+$(document).on('click', '.delete-btn', function() {
+    var button = $(this);
+    var micropostId = button.data('id');
+    var url = button.data('url');
+    var token = $('meta[name="csrf-token"]').attr('content');
+
+    if (confirm('Delete id = ' + micropostId + ' ?')) {
+        $.ajax({
+            url: url,
+            type: 'POST',  // LaravelでDELETEメソッドを模倣
+            data: {
+                _method: 'DELETE',
+                _token: token
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    button.closest('li').remove();
+                    alert('Delete Successful');
+                } else {
+                    alert('Delete Failed');
+                }
+            },
+            error: function(xhr) {
+                alert('Delete Failed');
+                console.error('Error:', xhr.responseText);
+            }
+        });
+    }
+});
+
+
+
 
 </script>

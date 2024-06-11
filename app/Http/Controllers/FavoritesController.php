@@ -25,6 +25,7 @@ class FavoritesController extends Controller
         $user = \Auth::user();
         $micropost = Micropost::find($id);
         // お気に入り数を取得
+        
         if ($user->is_favoriting($id)) {
             $user->unfavorite(intval($id));
             $status = 'unfavorited';

@@ -26,20 +26,12 @@
                         </div>
                         <div>
                             {{-- 投稿内容 --}}
-                            <p id = "content-{{ $micropost->id }}" class="mb-0">{!! nl2br(e($micropost->content)) !!}</p>
+                            {{-- <div id = "content-{{ $micropost->id }}" class="mb-0">{!! nl2br(e($micropost->content)) !!}</div> --}}
+                            <div id = "content-{{ $micropost->id }}" class="mb-0 markdown-content">{!! $micropost->content !!}</div>
                         </div>
                         <div>
                             @if (Auth::id() == $micropost->user_id)
-                                {{-- 投稿削除ボタンのフォーム --
-                                
-                                <form class="delete-form inline" data-id="{{ $micropost->id }}" data-url="{{ route('microposts.destroy', $micropost->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-light btn-sm normal-case delete-btn">🗑</button>
-                                </form>--}}
-                                
                                 <button type="button" class="btn btn-light btn-sm normal-case delete-btn" data-id="{{ $micropost->id }}" data-url="{{ route('microposts.destroy', $micropost->id) }}">🗑</button>
-                                
                                 
                                 @if (!Auth::user()->is_favoriting($micropost->id))
                                 {{-- お気に入り追加ボタンのフォーム --}}
@@ -80,11 +72,32 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
 <script>
     var favoritesBaseUrl = "{{ route('favorites.favorite', ['id' => ':id']) }}";
 </script>
-<script>
 
+<script>
+    $(document).ready(function() {
+        // marked.jsが正しく読み込まれているか確認するためのテスト
+        try {
+            var testMarkdown = "# Test Heading\n\nThis is a test.";
+            var testHtml = marked(testMarkdown);
+            console.log("marked.js is working:", testHtml);
+        } catch (error) {
+            console.error("marked.js is not working:", error);
+        }
+
+        // 各投稿内容をMarkdownからHTMLに変換
+        @foreach ($microposts as $micropost)
+            var contentElement = document.getElementById("content-{{ $micropost->id }}");
+            contentElement.innerHTML = marked.parse(contentElement.textContent);
+        @endforeach
+    });
+</script>
+
+
+<script>
 
 $(document).off('submit', 'form[id^="favorite-form-"]').on('submit', 'form[id^="favorite-form-"]', function(event) {
     event.preventDefault(); // デフォルトの送信を防止
@@ -154,7 +167,7 @@ function updateMicroposts(microposts) {
                         <span class="text-muted text-gray-500">posted at ${micropost.created_at}</span>
                     </div>
                     <div>
-                        <p id="content-${micropost.id}" class="mb-0">${micropost.content}</p>
+                        <p id="content-${micropost.id}" class="mb-0 markdown-content">${micropost.content}</p>
                     </div>
                     <div>
                         ${micropost.user.id === loggedInUserId ? `<button data-id="${micropost.id}" data-url="${deleteUrl}" class="delete-btn btn btn-light btn-sm normal-case">🗑</button>` : ''}

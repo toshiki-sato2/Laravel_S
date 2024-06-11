@@ -10,17 +10,6 @@ use App\Models\Micropost;
 class FavoritesController extends Controller
 {
     
-    /*
-    public function store(string $id){
-
-        \Auth::user()->favorite(intval($id));
-        //return back();
-        
-        
-        return response()->json(['status' => 'success']);
-    }*/
-
-    
     public function store(string $id){
         $user = \Auth::user();
         $micropost = Micropost::find($id);
@@ -40,9 +29,10 @@ class FavoritesController extends Controller
         return response()->json(['status' => $status, 'favoriteCount' => $favoriteCount]);
     }
     
+    /*
     public function destroy(string $id){
         
         \Auth::user()->unfavorite(intval($id));
         return back();
-    }
+    }*/
 }

@@ -90,6 +90,13 @@
             contentElement.innerHTML = marked.parse(contentElement.textContent);
         @endforeach
     });
+    
+    function convertMarkdownToHtml(elementId) {
+    var contentElement = document.getElementById(elementId);
+    if (contentElement) {
+        contentElement.innerHTML = marked.parse(contentElement.innerHTML);
+    }
+}
 </script>
 
 
@@ -129,6 +136,10 @@ $(document).ready(function() {
             success: function(data) {
                 console.log("Data received:", data); // 受け取ったデータをログに出力
                 updateMicroposts(data.microposts);
+                // 新しい投稿内容をMarkdownからHTMLに変換
+                data.microposts.forEach(function(micropost) {
+                convertMarkdownToHtml("content-" + micropost.id);
+        });
             },
             error: function(xhr, status, error) {
                 console.error("Error:", status, error); // エラー情報をログに出力
@@ -163,7 +174,7 @@ function updateMicroposts(microposts) {
                         <span class="text-muted text-gray-500">posted at ${micropost.created_at}</span>
                     </div>
                     <div>
-                        <p id="content-${micropost.id}" class="mb-0 markdown-content">${micropost.content}</p>
+                        <div id="content-${micropost.id}" class="mb-0 markdown-content">${micropost.content}</div>
                     </div>
                     <div>
                         ${micropost.user.id === loggedInUserId ? `<button data-id="${micropost.id}" data-url="${deleteUrl}" class="delete-btn btn btn-light btn-sm normal-case">🗑</button>` : ''}

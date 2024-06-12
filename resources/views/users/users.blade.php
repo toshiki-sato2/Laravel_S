@@ -1,3 +1,7 @@
+<div class="mb-4 mt-4">
+    <input type="text" name="keyword" placeholder="投稿検索" class="" id="input_style">
+</div>
+
 @if (isset($users))
     <ul class="list-none">
         <div class = "mb-4 {{ Request::routeIs('users.followers') ? 'hidden' : '' }} {{ Request::routeIs('users.followings') ? 'hidden' : '' }}">
@@ -39,3 +43,31 @@
     {{-- ページネーションのリンク --}}
     {{ $users->links() }}
 @endif
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('input[name="keyword"]').on('input', function() {
+        var keyword = $(this).val();
+        console.log("Keyword changed:", keyword); // この行を追加
+
+        $.ajax({
+            url: '{{ route('users.search') }}', // URLが正しいか確認
+            type: 'GET',
+            data: {keyword: keyword},
+            dataType: 'json',
+            success: function(data) {
+                console.log("Data received:", data); // 受け取ったデータをログに出力
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", status, error); // エラー情報をログに出力
+            }
+        });
+    });
+});
+
+
+
+</script>

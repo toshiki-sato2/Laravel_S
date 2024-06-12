@@ -1,6 +1,6 @@
 
 <div class="mb-4 mt-4">
-    <input type="text" name="keyword" placeholder="投稿検索" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" id="input_style">
+    <input type="text" name="keyword" placeholder="投稿検索" class="" id="input_style">
 </div>
 
 <div class="mt-4">
@@ -27,7 +27,7 @@
                         <div>
                             {{-- 投稿内容 --}}
                             {{-- <div id = "content-{{ $micropost->id }}" class="mb-0">{!! nl2br(e($micropost->content)) !!}</div> --}}
-                            <div id = "content-{{ $micropost->id }}" class="mb-0 markdown-content">{!! $micropost->content !!}</div>
+                            <div id = "content-{{ $micropost->id }}" class="mb-0 markdown-content">{!! nl2br(e( $micropost->content )) !!}</div>
                         </div>
                         <div>
                             @if (Auth::id() == $micropost->user_id)
@@ -73,11 +73,25 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
+
 <script>
     var favoritesBaseUrl = "{{ route('favorites.favorite', ['id' => ':id']) }}";
 </script>
 
 <script>
+// marked.jsのオプションを設定
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    tables: true,
+    breaks: true,
+    pedantic: false,
+    sanitize: true, // サニタイズを有効にする
+    smartLists: true,
+    smartypants: false,
+    xhtml: false
+});
+
     $(document).ready(function() {
         // marked.jsが正しく読み込まれているか確認するためのテスト
         try {
@@ -96,11 +110,13 @@
     });
     
     function convertMarkdownToHtml(elementId) {
-    var contentElement = document.getElementById(elementId);
-    if (contentElement) {
-        contentElement.innerHTML = marked.parse(contentElement.innerHTML);
+        var contentElement = document.getElementById(elementId);
+        if (contentElement) {
+            var rawHtml = marked.parse(contentElement.innerHTML);
+            contentElement.innerHTML = rawHtml;
+        }
     }
-}
+    
 </script>
 
 

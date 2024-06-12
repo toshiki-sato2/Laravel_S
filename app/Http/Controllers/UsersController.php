@@ -29,6 +29,20 @@ class UsersController extends Controller
             "users" => $users]);
     }
     
+    public function users_search(Request $request)
+    {
+        $users = User::orderBy("id", "desc");
+
+        $keywords = $request->input("keyword");
+
+        if (!empty($keywords)) {
+            $users->where("name", "like", "%{$keywords}%");
+        }
+
+        $users = $users->paginate(10);
+
+        return response()->json(["users" => $users]);
+    }
     
     
     public function show(string $id)

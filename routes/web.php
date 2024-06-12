@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     
     //お前が右上で飛ばしているのはわかっているんだけども、、
     Route::resource('users', UsersController::class, ['only' => ['index', 'show', 'create', 'update']]);
-    
+    Route::get("users/user_lists", [UsersController::class, 'users_search'])->name("users.search");
 
     Route::put('users/{id}/update_image', [UsersController::class, 'update_image'])->name('users.update_image');
     Route::put('users/{id}/edit_profile', [UsersController::class, 'edit_profile'])->name('users.edit_profile');

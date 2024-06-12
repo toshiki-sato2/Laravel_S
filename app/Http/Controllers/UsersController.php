@@ -35,7 +35,19 @@ class UsersController extends Controller
         Log::info('users_search method called');
         Log::info('Request data: ', $request->all());
 
-        return response()->json(['message' => 'This is a test response']);
+        $users = User::orderBy("id", "desc");
+
+        $keywords = $request->input("keyword");
+
+        if (!empty($keywords)) {
+            $users->where("name", "like", "%{$keywords}%");
+        }
+
+        $users = $users->paginate(10);
+
+        Log::info('Users found: ', $users->toArray());
+
+        return response()->json(["users" => $users]);
     }
     
     

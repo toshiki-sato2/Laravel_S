@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -31,24 +32,18 @@ class UsersController extends Controller
     
     public function users_search(Request $request)
     {
-        $users = User::orderBy("id", "desc");
+        Log::info('users_search method called');
+        Log::info('Request data: ', $request->all());
 
-        $keywords = $request->input("keyword");
-
-        if (!empty($keywords)) {
-            $users->where("name", "like", "%{$keywords}%");
-        }
-
-        $users = $users->paginate(10);
-
-        return response()->json(["users" => $users]);
+        return response()->json(['message' => 'This is a test response']);
     }
+    
     
     
     public function show(string $id)
     {
         $user = User::findOrFail($id);
-        
+        \Log::info('users_search method called');
         // 関係するモデルの件数をロード
         $user->loadRelationshipCounts();
         

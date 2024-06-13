@@ -3,8 +3,8 @@
 </div>
 
 @if (isset($users))
-    <ul class="list-none">
-        {{--<div class="mb-4 {{ Request::routeIs('users.followers') ? 'hidden' : '' }} {{ Request::routeIs('users.followings') ? 'hidden' : '' }}">
+    <ul class="list-none" id="user-list">
+        {{-- <div class="mb-4 {{ Request::routeIs('users.followers') ? 'hidden' : '' }} {{ Request::routeIs('users.followings') ? 'hidden' : '' }}">
             <form action="{{ route('users.index') }}" method="GET">
                 @csrf
                 <input type="text" name="keyword" placeholder="ユーザ名を検索" class="" id="input_style">
@@ -59,7 +59,8 @@ $(document).ready(function() {
             data: {keyword: keyword, _token: '{{ csrf_token() }}'},
             dataType: 'json',
             success: function(data) {
-                console.log("Data received:", data);
+                console.log("Data received:", data); // 受け取ったデータをログに出力
+                updateUserLists(data.users.data); // data.users.dataを渡す
             },
             error: function(xhr, status, error) {
                 console.error("Error:", status, error);
@@ -68,4 +69,42 @@ $(document).ready(function() {
     });
 });
 
+function updateUserLists(users) {
+    console.log("Users data:", users); // デバッグ用のログを追加
+
+    var userList = $('#user-list');
+    userList.empty();
+
+    if (!users || users.length === 0) {
+        userList.append('<h1>Ops! there is no user.</h1>');
+    } else {
+        users.forEach(function(user) {
+            var avatarPath = user.avatar_path === "default.png" ? 
+                'https://www.gravatar.com/avatar/' + md5(user.email.trim().toLowerCase()) + '?s=500' : 
+                '{{ asset("storage/") }}/' + user.avatar_path;
+
+            var userItem = `
+                <li class="flex items-center gap-x-2 mb-4">
+                    <div class="avatar">
+                        <div class="w-12 rounded">
+                            <img src="${avatarPath}" alt="Avatar">
+                        </div>
+                    </div>
+                    <div>
+                        <div>${user.name}</div>
+                        <div>
+                            <p><a class="link link-hover text-info" href="/users/${user.id}">View profile</a></p>
+                        </div>
+                    </div>
+                </li>
+            `;
+            userList.append(userItem);
+        });
+    }
+}
+
+function md5(string) {
+    return CryptoJS.MD5(string).toString();
+}
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>

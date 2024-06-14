@@ -13,6 +13,7 @@ Route::get('/dashboard', [MicropostsController::class, 'index'])->middleware(['a
 Route::middleware('auth')->group(function () {
     Route::post('/dashboard', [MicropostsController::class, 'index'])->name('microposts.index');
     Route::get('/dashboard/search/{id}', [MicropostsController::class, 'keyword_search'])->name('microposts.search');
+    
     Route::get("/users/user_lists", [UsersController::class, 'users_search'])->name("users.search");
     
     Route::prefix("users/{id}")->group(function(){

@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for micropostss on 2024-05-29T09:34:49Z
+# fly.toml app configuration file generated for likemicroposts on 2024-06-17T01:43:55Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'micropostss'
+app = 'likemicroposts'
 primary_region = 'nrt'
 console_command = 'php /var/www/html/artisan tinker'
 
@@ -19,14 +19,14 @@ console_command = 'php /var/www/html/artisan tinker'
   LOG_STDERR_FORMATTER = 'Monolog\Formatter\JsonFormatter'
   SESSION_DRIVER = 'cookie'
   SESSION_SECURE_COOKIE = 'true'
-  APP_URL = 'https://micropostss.fly.dev/'
-  APP_NAME = 'micropostss'
+  APP_URL = 'https://likemicroposts.fly.dev'
+  APP_NAME = 'laravel'
   APP_DEBUG = false
   DB_CONNECTION = 'pgsql'
   DB_HOST = 'aws-0-ap-northeast-1.pooler.supabase.com'
   DB_PORT = 5432
   DB_DATABASE = 'postgres'
-  DB_USERNAME = 'postgres.ilaelvulvphkhypclvgl'
+  DB_USERNAME = 'postgres.moupypiifskeovsvduvd'
 
 [http_service]
   internal_port = 8080

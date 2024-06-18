@@ -1,7 +1,12 @@
 
-<div class="mb-4 mt-4">
+<div class="mb-4 mt-4  {{ Request::routeIs('dashboard') ? 'hidden' : '' }}">
     <input type="text" name="keyword" placeholder="投稿検索" class="" id="input_style">
 </div>
+
+<div class="mb-4 mt-4 {{ Request::routeIs('dashboard') ? '' : 'hidden' }}">
+    <input type="text" name="keyword_search_for_dashboard" placeholder="投稿検索" class="" id="input_style">
+</div>
+
 
 <div class="mt-4">
     @if (!empty($microposts))
@@ -150,6 +155,31 @@ $(document).ready(function() {
 
         $.ajax({
             url: '{{ route('microposts.search', ['id' => $user->id]) }}', // URLが正しいか確認
+            type: 'GET',
+            data: {keyword: keyword},
+            dataType: 'json',
+            success: function(data) {
+                console.log("Data received:", data); // 受け取ったデータをログに出力
+                updateMicroposts(data.microposts);
+                // 新しい投稿内容をMarkdownからHTMLに変換
+                data.microposts.forEach(function(micropost) {
+                convertMarkdownToHtml("content-" + micropost.id);
+        });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", status, error); // エラー情報をログに出力
+            }
+        });
+    });
+});
+
+$(document).ready(function() {
+    $('input[name="keyword_search_for_dashboard"]').on('input', function() {
+        var keyword = $(this).val();
+        console.log("Keyword changed:", keyword); // この行を追加
+
+        $.ajax({
+            url: '{{ route('microposts.searchfordash', ['id' => $user->id]) }}', // URLが正しいか確認
             type: 'GET',
             data: {keyword: keyword},
             dataType: 'json',

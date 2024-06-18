@@ -38,4 +38,7 @@ console_command = 'php /var/www/html/artisan tinker'
 
 [[vm]]
   size = 'shared-cpu-1x'
-  
+
+[mounts]
+  source="storage_vol"
+  destination="/var/www/html/storage"

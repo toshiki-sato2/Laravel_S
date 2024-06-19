@@ -151,7 +151,7 @@ class UsersController extends Controller
     public function update(request $request){
         
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255','regex:/^[^<>]+$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
         ]);
         

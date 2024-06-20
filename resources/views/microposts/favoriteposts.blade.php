@@ -1,5 +1,5 @@
 <div class="mt-4">
-    @if (!empty($microposts))
+    @if (!$microposts->isEmpty())
         <ul class="list-none">
             @foreach ($microposts as $micropost)
                 <li class="flex items-start gap-x-2 mb-4">
@@ -63,6 +63,8 @@
         </ul>
         {{-- ページネーションのリンク --}}
         {{ $microposts->links() }}
+        @else
+            <h2>there is no favorite posts!</h2>
     @endif
 </div>
 
@@ -175,6 +177,10 @@ function updateMicroposts(microposts) {
     var csrfToken = '{{ csrf_token() }}';
     var loggedInUserId = @json(auth()->id());
     var baseUrl = "{{ asset('storage/') }}";
+    if(microposts.length === 0){
+        $('.list-none').html('<p>There is no favorite posts.</p>');
+        return;
+    }
     microposts.forEach(function(micropost) {
         var avatarPath = micropost.user.avatar_path === 'default.png' ?
                          Gravatar.get(micropost.user.email, {size: 500}) :

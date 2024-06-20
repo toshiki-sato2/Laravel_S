@@ -72,7 +72,7 @@
             @endforeach
         </ul>
         @else
-            <h2>Oppps! there is no post yet.</h2>
+            <h2>Oppps! there is no posts yet.</h2>
         {{-- ページネーションのリンク --}}
         {{ $microposts->links() }}
     @endif

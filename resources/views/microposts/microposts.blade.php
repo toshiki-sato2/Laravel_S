@@ -9,7 +9,7 @@
 
 
 <div class="mt-4">
-    @if (!empty($microposts))
+    @if (!$microposts->isEmpty())
         <ul class="list-none">
             @foreach ($microposts as $micropost)
                 <li class="flex items-start gap-x-2 mb-4">
@@ -71,6 +71,8 @@
                 </li>
             @endforeach
         </ul>
+        @else
+            <h2>Oppps! there is no post yet.</h2>
         {{-- ページネーションのリンク --}}
         {{ $microposts->links() }}
     @endif
@@ -205,6 +207,10 @@ function updateMicroposts(microposts) {
     var csrfToken = '{{ csrf_token() }}';
     var loggedInUserId = @json(auth()->id());
     var baseUrl = "{{ asset('storage/') }}";
+    if(microposts.length === 0){
+        $('.list-none').html('<p>Not Found Posts.</p>');
+        return;
+    }
     microposts.forEach(function(micropost) {
         var avatarPath = micropost.user.avatar_path === 'default.png' ?
                          Gravatar.get(micropost.user.email, {size: 500}) :
@@ -223,7 +229,7 @@ function updateMicroposts(microposts) {
                 <div>
                     <div>
                         <a class="link link-hover text-info" href="/users/${micropost.user.id}">${micropost.user.name}</a>
-                        <span class="text-muted text-gray-500">posted at ${formattedDate}</span>
+                        <span class="text-muted text-gray-500">posted at ${micropost.created_at}</span>
                     </div>
                     <div>
                         <div id="content-${micropost.id}" class="mb-0 markdown-content">${micropost.content}</div>

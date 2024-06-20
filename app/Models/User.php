@@ -116,8 +116,17 @@ class User extends Authenticatable
     
     
     //関係を表す
-    public function favorites(){
+    /*public function favorites(){
         return $this->belongsToMany(Micropost::class, "favorites", "user_id", "micropost_id")->withTimestamps();
+    }*/
+    
+    public function favorites()
+    {
+        return $this->belongsToMany(Micropost::class, "favorites", "user_id", "micropost_id")
+                    ->whereHas('user', function($query) {
+                        $query->whereNull('deleted_at');
+                    })
+                    ->withTimestamps();
     }
     
     //お気に入りに登録する

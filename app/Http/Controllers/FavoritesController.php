@@ -23,10 +23,16 @@ class FavoritesController extends Controller
             $status = 'favorited';
         }
         
+        $forposts = $user->favorites()->with('user')->paginate(10);
+
+        foreach($forposts as $forpost){
+            $forpost->favorite_count = $forpost->favoriteCounts();
+        }  
+        
         // お気に入り数を取得
         $favoriteCount = $micropost->favoriteCounts();
 
-        return response()->json(['status' => $status, 'favoriteCount' => $favoriteCount]);
+        return response()->json(['status' => $status, 'favoriteCount' => $favoriteCount, 'microposts' => $forposts->items()]);
     }
     
     /*

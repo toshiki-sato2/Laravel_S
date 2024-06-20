@@ -99,6 +99,17 @@
 
             <button type="submit" class="btn btn-primary btn-outline">編集完了</button>
         </form>
+        
+    </div>
+
+    <div class="flex justify-center">
+        <form action="{{ route('users.destroy', \Auth::User()->id) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-error" onclick="return confirm('本当に削除しますか？');">
+                アカウントを削除する（投稿内容もクリアされます）
+            </button>
+        </form>
     </div>
 
 

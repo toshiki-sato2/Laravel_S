@@ -13,6 +13,20 @@ use Illuminate\Validation\Rules\Password;
 
 class UsersController extends Controller
 {
+    public function destroy($id)
+    {
+        $user = Auth::user();
+
+        if ($user->id == $id) {
+            $user->delete(); // ユーザーを論理削除
+            Auth::logout(); // ユーザーをログアウトさせる
+
+            return redirect('/')->with('status', 'アカウントが削除されました。');
+        } else {
+            return redirect()->back()->with('error', '不正な操作です。');
+        }
+}
+    
     public function index(request $request)
     {
         //$users = User::orderBy("id", "desc")->paginate(10);

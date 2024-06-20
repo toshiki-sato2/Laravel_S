@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
         Route::post('favorites', [FavoritesController::class, 'store'])->name('favorites.favorite');
     });
 
-    Route::resource('users', UsersController::class, ['only' => ['index', 'show', 'create', 'update']]);
+    Route::resource('users', UsersController::class, ['only' => ['index', 'show', 'create', 'update', 'destroy']]);
 
     Route::put('users/{id}/update_image', [UsersController::class, 'update_image'])->name('users.update_image');
     Route::put('users/{id}/edit_profile', [UsersController::class, 'edit_profile'])->name('users.edit_profile');

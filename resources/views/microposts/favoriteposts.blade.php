@@ -125,12 +125,18 @@ $(document).off('submit', 'form[id^="favorite-form-"]').on('submit', 'form[id^="
 
     $.post(url, data).done(function(response) {
         // レスポンスに基づいてボタンのテキストとクラスを更新
-        button.text('💓' + response.favoriteCount);
+        
+        /*button.text('💓' + response.favoriteCount);
         if (response.status === 'favorited') {
             button.removeClass('btn-light').addClass('btn-error');
         } else {
             button.removeClass('btn-error').addClass('btn-light');
-        }
+        }*/
+        console.log(response);
+        updateMicroposts(response.microposts);
+        response.microposts.forEach(function(micropost) {
+            convertMarkdownToHtml("content-" + micropost.id);
+        });
     }).fail(function(error) {
         console.error('Error:', error); // エラーが発生した場合、コンソールにエラーを出力
     });
@@ -173,9 +179,11 @@ function updateMicroposts(microposts) {
         var avatarPath = micropost.user.avatar_path === 'default.png' ?
                          Gravatar.get(micropost.user.email, {size: 500}) :
                          baseUrl + '/' + micropost.user.avatar_path;
-        var favoriteButtonClass = micropost.is_favoriting ? 'btn-error' : 'btn-light';
+        //var favoriteButtonClass = micropost.status ? 'btn-error' : 'btn-light';
+        var favoriteButtonClass = 'btn-error';
         var deleteUrl = `/microposts/${micropost.id}`;
         var favoriteUrl = favoritesBaseUrl.replace(':id', micropost.id);
+        var formattedDate = moment(micropost.created_at).format('YYYY-MM-DD HH:mm:ss');
         html += `
             <li class="flex items-start gap-x-2 mb-4">
                 <div class="avatar">
@@ -186,7 +194,7 @@ function updateMicroposts(microposts) {
                 <div>
                     <div>
                         <a class="link link-hover text-info" href="/users/${micropost.user.id}">${micropost.user.name}</a>
-                        <span class="text-muted text-gray-500">posted at ${micropost.created_at}</span>
+                        <span class="text-muted text-gray-500">posted at ${formattedDate}</span>
                     </div>
                     <div>
                         <div id="content-${micropost.id}" class="mb-0 markdown-content">${micropost.content}</div>

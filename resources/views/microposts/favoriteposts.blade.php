@@ -7,7 +7,7 @@
                     <div class="avatar">
                         <div class="w-12 rounded">
                             @if ($micropost->user->avatar_path === "default.png")
-                                <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="">
+                                <img src="{{ asset('avator/'.$micropost->user->avatar_path) }}" alt="Avatar Image">
                             @else
                                 <img src="{{ asset('storage/' . $micropost->user->avatar_path) }}" alt="Avatar">
                             @endif
@@ -177,13 +177,14 @@ function updateMicroposts(microposts) {
     var csrfToken = '{{ csrf_token() }}';
     var loggedInUserId = @json(auth()->id());
     var baseUrl = "{{ asset('storage/') }}";
+    var unbaseUrl = "{{ asset('avator/') }}";
     if(microposts.length === 0){
         $('.list-none').html('<p>There is no favorite posts.</p>');
         return;
     }
     microposts.forEach(function(micropost) {
         var avatarPath = micropost.user.avatar_path === 'default.png' ?
-                         Gravatar.get(micropost.user.email, {size: 500}) :
+                         unbaseUrl + '/' + micropost.user.avatar_path:
                          baseUrl + '/' + micropost.user.avatar_path;
         //var favoriteButtonClass = micropost.status ? 'btn-error' : 'btn-light';
         var favoriteButtonClass = 'btn-error';

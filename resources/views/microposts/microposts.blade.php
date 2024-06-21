@@ -17,7 +17,8 @@
                     <div class="avatar">
                         <div class="w-12 rounded">
                             @if ($micropost->user->avatar_path === "default.png")
-                                <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="">
+                                {{-- <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt=""> --}}
+                                <img src="{{ asset('avator/'.$micropost->user->avatar_path) }}" alt="Avatar Image">
                             @else
                                 <img src="{{ asset('storage/' . $micropost->user->avatar_path) }}" alt="Avatar">
                             @endif
@@ -207,13 +208,14 @@ function updateMicroposts(microposts) {
     var csrfToken = '{{ csrf_token() }}';
     var loggedInUserId = @json(auth()->id());
     var baseUrl = "{{ asset('storage/') }}";
+    var unbaseUrl = "{{ asset('avator/') }}";
     if(microposts.length === 0){
         $('.list-none').html('<p>Not Found Posts.</p>');
         return;
     }
     microposts.forEach(function(micropost) {
         var avatarPath = micropost.user.avatar_path === 'default.png' ?
-                         Gravatar.get(micropost.user.email, {size: 500}) :
+                         unbaseUrl + '/' +  micropost.user.avatar_path:
                          baseUrl + '/' + micropost.user.avatar_path;
         var favoriteButtonClass = micropost.is_favoriting ? 'btn-error' : 'btn-light';
         var deleteUrl = `/microposts/${micropost.id}`;
@@ -229,7 +231,7 @@ function updateMicroposts(microposts) {
                 <div>
                     <div>
                         <a class="link link-hover text-info" href="/users/${micropost.user.id}">${micropost.user.name}</a>
-                        <span class="text-muted text-gray-500">posted at ${micropost.created_at}</span>
+                        <span class="text-muted text-gray-500">posted at ${formattedDate}</span>
                     </div>
                     <div>
                         <div id="content-${micropost.id}" class="mb-0 markdown-content">${micropost.content}</div>
@@ -248,6 +250,7 @@ function updateMicroposts(microposts) {
         `;
     });
     $('.list-none').html(html);
+    // Set text content safely to avoid XSS
 }
 
 $(document).on('click', '.delete-btn', function() {

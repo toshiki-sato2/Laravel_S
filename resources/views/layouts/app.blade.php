@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="{{ asset('/css/style.css') }}">
         @vite('resources/css/app.css')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gravatar@1.8.2/index.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
         
 <style>
     .markdown-content h1 {

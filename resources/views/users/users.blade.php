@@ -18,7 +18,7 @@
                     <div class="avatar">
                         <div class="w-12 rounded">
                             @if ($user->avatar_path === "default.png")
-                                <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="">
+                                <img src="{{ asset('avator/'.$user->avatar_path) }}" alt="Avatar Image">
                             @else
                                 <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="Avatar">
                             @endif
@@ -74,13 +74,15 @@ function updateUserLists(users) {
 
     var userList = $('#user-list');
     userList.empty();
+    
+    var unbaseUrl='{{ asset("avator/") }}/'
 
     if (!users || users.length === 0) {
         userList.append('<h1>Ops! there is no user.</h1>');
     } else {
         users.forEach(function(user) {
             var avatarPath = user.avatar_path === "default.png" ? 
-                'https://www.gravatar.com/avatar/' + md5(user.email.trim().toLowerCase()) + '?s=500' : 
+                unbaseUrl + '/' +  user.avatar_path : 
                 '{{ asset("storage/") }}/' + user.avatar_path;
 
             var userItem = `

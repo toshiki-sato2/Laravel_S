@@ -4,7 +4,7 @@
     </div>
     <figure>
         @if ($user->avatar_path === "default.png")
-            <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="！画像が設定されていません！">
+            <img src="{{ asset('avator/' . $user->avatar_path) }}" alt="！画像が設定されていません！">
         @else
             <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="！もし画像がうまく表示されなければ画像を再設定してください！">
         @endif

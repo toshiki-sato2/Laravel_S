@@ -38,7 +38,7 @@ class UsersController extends Controller
             $users->where("name", "like", "%{$keywords}%");
         }
         
-        $users = $users->paginate(10);
+        $users = $users->paginate(100);
         
         return view("users.index",[
             "users" => $users]);
@@ -57,7 +57,7 @@ class UsersController extends Controller
             $users->where("name", "like", "%{$keywords}%");
         }
 
-        $users = $users->paginate(10);
+        $users = $users->paginate(100);
 
         Log::info('Users found: ', $users->toArray());
 
@@ -74,7 +74,7 @@ class UsersController extends Controller
         $user->loadRelationshipCounts();
         
         // ユーザーの投稿一覧を作成日時の降順で取得
-        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(100);
         
         //ここで代入がうまくいっている意味がわからないのかもしれない
         //そりゃそう、foreach使ったらそれぞれが表示されるに決まってるやんバカ！
@@ -96,7 +96,7 @@ class UsersController extends Controller
         
         $user->loadRelationshipCounts();
         
-        $microposts= $user->favorites()->paginate(10);
+        $microposts= $user->favorites()->paginate(100);
 
         foreach($microposts as $micropost){
             $micropost->favorite_count = $micropost->favoriteCounts();
@@ -123,7 +123,7 @@ class UsersController extends Controller
         $user->loadRelationshipCounts();
 
         // ユーザーのフォロー一覧を取得
-        $followings = $user->followings()->paginate(10);
+        $followings = $user->followings()->paginate(100);
 
         // フォロー一覧ビューでそれらを表示
         return view('users.followings', [
@@ -147,7 +147,7 @@ class UsersController extends Controller
         $user->loadRelationshipCounts();
 
         // ユーザーのフォロワー一覧を取得
-        $followers = $user->followers()->paginate(10);
+        $followers = $user->followers()->paginate(100);
 
         // フォロワー一覧ビューでそれらを表示
         return view('users.followers', [

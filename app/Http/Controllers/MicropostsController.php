@@ -27,7 +27,7 @@ class MicropostsController extends Controller
                 $microposts->where("content", "like", "%{$keywords}%");
             }
         
-            $microposts = $microposts->paginate(10);
+            $microposts = $microposts->paginate(100);
             
             
             foreach($microposts as $micropost){
@@ -60,7 +60,7 @@ class MicropostsController extends Controller
             $query->where("content", "like", "%{$keywords}%");
         }
 
-        $microposts = $query->paginate(10);
+        $microposts = $query->paginate(100);
 
         foreach ($microposts as $micropost) {
             $micropost->favorite_count = $micropost->favoriteCounts();
@@ -90,7 +90,7 @@ class MicropostsController extends Controller
             $query->where("content", "like", "%{$keywords}%");
         }
 
-        $microposts = $query->paginate(10);
+        $microposts = $query->paginate(100);
 
         foreach ($microposts as $micropost) {
             $micropost->favorite_count = $micropost->favoriteCounts();

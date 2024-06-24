@@ -14,7 +14,7 @@
                     <div class="avatar">
                         <div class="w-12 rounded">
                             @if ($user->avatar_path === "default.png")
-                                <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="">
+                                <img src="{{ asset('avator/' . $user->avatar_path) }}" alt="！画像が設定されていません！">
                             @else
                                 <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="Avatar">
                             @endif

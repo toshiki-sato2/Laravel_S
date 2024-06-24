@@ -1,5 +1,5 @@
 <div class="mb-4 mt-4">
-    <input type="text" name="keyword" placeholder="投稿検索" class="" id="input_style">
+    <input type="text" name="keyword" placeholder="ユーザ検索" class="" id="input_style">
 </div>
 
 @if (isset($users))

@@ -12,7 +12,11 @@
             <div class="mt-4">
                 {{-- ポスト一覧 --}}
                 {{-- @include('microposts.microposts') --}}
-                @include("microposts.favoriteposts")
+                @if(Auth::id() == $user->id)
+                    @include("microposts.favoriteposts")
+                @else
+                    @include("microposts.others")
+                @endif
             </div>
         </div>
     </div>

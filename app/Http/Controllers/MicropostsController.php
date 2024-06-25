@@ -147,7 +147,7 @@ class MicropostsController extends Controller
         $user->loadRelationshipCounts();
         
         // ユーザーの投稿一覧を作成日時の降順で取得
-        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(100);
         
         foreach($microposts as $micropost){
             $micropost->favorite_count = $micropost->favoriteCounts();
